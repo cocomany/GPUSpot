@@ -125,7 +125,7 @@ if [[ "$ACTION" == "init" || "$ACTION" == "start" || "$ACTION" == "delete" ]]; t
     fi
 
     # Create EBS volume
-    VOLUME_ID=$(aws ec2 describe-volumes --filters "Name=tag:Name,Values=disk-$DEPL_NAME" --query "Volume[0].VolumeId" --output text)
+    VOLUME_ID=$(aws ec2 describe-volumes --filters Name=tag:Name,Values=disk-$DEPL_NAME --query 'Volumes[0].{ID:VolumeId}' --output text)
     if [ -z "$VOLUME_ID" ] || [ "$VOLUME_ID" == "None" ]; then
         VOLUME_ID=$(aws ec2 create-volume --availability-zone ${AZ} --size ${DATA_DISK_SIZE_GB} --volume-type gp3 --tag-specifications "ResourceType=volume,Tags=[{Key=Name,Value=disk-$DEPL_NAME}]" --query 'VolumeId' --output text) 
     else
@@ -190,11 +190,10 @@ SubnetId=$SUBNET_ID \
 EOF
 
     # Remove mkfs command if not initializing 
-    if [ "$ACTION" != "init" ]; then
+    if [ "$ACTION" == "start" ]; then
         sed -i '/mkfs/d' mount.volume.sh
     fi
 
-    sleep 10
     # Copy script to instance and run
     scp -o "StrictHostKeyChecking=no" -i $KEY_FULL_PATH mount.volume.sh ubuntu@${PUBLIC_IP}:/tmp/
     ssh -o "StrictHostKeyChecking=no" -i $KEY_FULL_PATH ubuntu@${PUBLIC_IP} 'bash /tmp/mount.volume.sh'
