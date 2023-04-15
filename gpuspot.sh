@@ -5,7 +5,7 @@
 # gpuspot.sh init     # Initialize resources, will create a new EBS/Disk volume or format the exsiting one
 # gpuspot.sh start    # Start a spot instance, will reuse created EBS/Disk volume
 # gpuspot.sh stop     # Stop a running spot instance, keep EBS/Disk volume
-# gpuspot.sh delete   # Delete all resources, like key EBS/Disk volume, pair, VPC, etc 
+# gpuspot.sh delete   # Delete all resources, like EBS/Disk volume, key pair, VPC, etc 
 # gpuspot.sh openport gpuspot 7860 # Open port 7860 to the world
 # gpuspot.sh check gpuspot  # Check the instance status (type, launch time, IP, logon command, etc)
 
