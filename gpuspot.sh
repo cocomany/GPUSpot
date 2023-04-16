@@ -247,6 +247,8 @@ if [ "$ACTION" == "check" ]; then
     if [ -z "INSTANCE_ID" ]; then
         echo "no such instance $INSTANCE_NAME"
     else
+        INSTANCE_STATUS=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[*].Instances[*].State.Name' --output text)
+        if [ "$INSTANCE_STATUS" != "running" ]; then echo "instance $INSTANCE_NAME is not running"; exit 1; fi
         INSTANCE_TYPE=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[].Instances[].InstanceType' --output text)
 
         echo "Instance type is $INSTANCE_TYPE"
